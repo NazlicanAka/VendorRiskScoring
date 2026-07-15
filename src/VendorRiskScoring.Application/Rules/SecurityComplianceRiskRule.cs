@@ -20,7 +20,7 @@ public class SecurityComplianceRiskRule : IRiskRule
             {
                 double avg = similarRisks.Values.Average();
                 triggeredScores.Add(avg);
-                result.Explanations.Add($"Missing ISO27001.");
+                result.Explanations.Add($"missing ISO27001 certification");
             }
         }
 
@@ -30,7 +30,7 @@ public class SecurityComplianceRiskRule : IRiskRule
             {
                 double avg = similarRisks.Values.Average();
                 triggeredScores.Add(avg);
-                result.Explanations.Add($"No Pentest Report.");
+                result.Explanations.Add($"No Pentest Report");
             }
         }
 
@@ -41,7 +41,7 @@ public class SecurityComplianceRiskRule : IRiskRule
             {
                 double avg = similarRisks.Values.Average();
                 triggeredScores.Add(avg);
-                result.Explanations.Add($"Expired Privacy Policy.");
+                result.Explanations.Add($"Expired Privacy Policy");
             }
         }
 
@@ -51,11 +51,10 @@ public class SecurityComplianceRiskRule : IRiskRule
             {
                 double avg = similarRisks.Values.Average();
                 triggeredScores.Add(avg);
-                result.Explanations.Add($"Expired Contract.");
+                result.Explanations.Add($"Expired Contract");
             }
         }
 
-        // Tetiklenen tüm güvenlik ve uyumluluk risklerinin ortak ortalamasını al
         if (triggeredScores.Any())
         {
             result.Score = triggeredScores.Average();

@@ -22,12 +22,12 @@ public class FinancialRiskRule : IRiskRule
 
         if (vendor.FinancialHealth > 80)
         {
-            result.Explanations.Add($"Financial Health > 80.");
+            result.Explanations.Add($"Financial Health is more than 80.");
         }
         else if (vendor.FinancialHealth < 50)
         {
             triggeredScores.Add(matrixAverage);
-            result.Explanations.Add($"Financial Health < 50.");
+            result.Explanations.Add($"Financial Health is less than 50.");
         }
         else
         {

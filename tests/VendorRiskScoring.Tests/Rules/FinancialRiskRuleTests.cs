@@ -21,8 +21,8 @@ public class FinancialRiskRuleTests
     }
 
     [Theory]
-    [InlineData(85, "Financial Health > 80.", 0.0)]
-    [InlineData(81, "Financial Health > 80.", 0.0)]
+    [InlineData(85, "Financial Health is more than 80.", 0.0)]
+    [InlineData(81, "Financial Health is more than 80.", 0.0)]
     public void CalculateRisk_HighHealth_ReturnsZeroScore(int health, string expectedExplanation, double expectedScore)
     {
         var vendor = new Vendor { FinancialHealth = health };
@@ -52,7 +52,7 @@ public class FinancialRiskRuleTests
         var result = _rule.CalculateRisk(vendor, matrix);
 
         Assert.Equal(0.7, result.Score);
-        Assert.Contains("Financial Health < 50.", result.Explanations);
+        Assert.Contains("Financial Health is less than 50.", result.Explanations);
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public class FinancialRiskRuleTests
         var result = _rule.CalculateRisk(vendor, matrix);
 
         Assert.Equal(1.0, result.Score);
-        Assert.Contains("Financial Health < 50.", result.Explanations);
+        Assert.Contains("Financial Health is less than 50.", result.Explanations);
     }
 
     [Fact]

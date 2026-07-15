@@ -32,8 +32,6 @@ public class OperationalRiskRuleTests
         var result = _rule.CalculateRisk(vendor, matrix);
 
         Assert.Equal(0.0, result.Score);
-        Assert.Contains("SLA >= 95%.", result.Explanations);
-        Assert.Contains("Major incidents <= 2.", result.Explanations);
     }
 
     [Fact]
@@ -51,8 +49,7 @@ public class OperationalRiskRuleTests
         var result = _rule.CalculateRisk(vendor, matrix);
 
         Assert.Equal(0.7, result.Score);
-        Assert.Contains("SLA < 95%.", result.Explanations);
-        Assert.Contains("Major incidents <= 2.", result.Explanations);
+        Assert.Contains("SLA below 95%", result.Explanations);
     }
 
     [Fact]
@@ -70,8 +67,7 @@ public class OperationalRiskRuleTests
         var result = _rule.CalculateRisk(vendor, matrix);
 
         Assert.Equal(0.9, result.Score);
-        Assert.Contains("SLA >= 95%.", result.Explanations);
-        Assert.Contains("Major incidents > 2.", result.Explanations);
+        Assert.Contains("more than 2 major incidents", result.Explanations);
     }
 
     [Fact]
@@ -90,8 +86,8 @@ public class OperationalRiskRuleTests
         var result = _rule.CalculateRisk(vendor, matrix);
 
         Assert.Equal(0.7, result.Score);
-        Assert.Contains("SLA < 95%.", result.Explanations);
-        Assert.Contains("Major incidents > 2.", result.Explanations);
+        Assert.Contains("SLA below 95%", result.Explanations);
+        Assert.Contains("more than 2 major incidents", result.Explanations);
     }
 
     [Fact]

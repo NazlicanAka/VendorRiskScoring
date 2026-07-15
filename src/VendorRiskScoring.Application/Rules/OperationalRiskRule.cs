@@ -13,34 +13,24 @@ public class OperationalRiskRule : IRiskRule
         var result = new RiskResult();
         var triggeredScores = new List<double>();
 
-        // 1. SLA Uptime
         if (vendor.SlaUptime < 95)
         {
             if (matrix.OperationalRisk.TryGetValue("slaDrop", out var slaRisks) && slaRisks.Any())
             {
                 double slaAvg = slaRisks.Values.Average();
                 triggeredScores.Add(slaAvg);
-                result.Explanations.Add($"SLA < 95%.");
+                result.Explanations.Add("SLA below 95%"); 
             }
         }
-        else
-        {
-            result.Explanations.Add($"SLA >= 95%.");
-        }
 
-        // 2. Major Incidents
         if (vendor.MajorIncidents > 2)
         {
             if (matrix.OperationalRisk.TryGetValue("majorIncident", out var incidentRisks) && incidentRisks.Any())
             {
                 double incidentAvg = incidentRisks.Values.Average();
                 triggeredScores.Add(incidentAvg);
-                result.Explanations.Add($"Major incidents > 2.");
+                result.Explanations.Add("more than 2 major incidents");
             }
-        }
-        else 
-        {
-            result.Explanations.Add($"Major incidents <= 2.");
         }
 
         if (triggeredScores.Any())

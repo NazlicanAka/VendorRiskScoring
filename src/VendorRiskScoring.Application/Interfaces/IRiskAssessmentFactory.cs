@@ -4,5 +4,5 @@ namespace VendorRiskScoring.Application.Factories;
 
 public interface IRiskAssessmentFactory
 {
-    RiskAssessment Create(int vendorId, double finalScore, List<string> explanations);
+    RiskAssessment Create(int vendorId, double finalScore, Dictionary<string, List<string>> categorizedExplanations);
 }

@@ -1,4 +1,7 @@
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using VendorRiskScoring.Application.Configuration;
 using VendorRiskScoring.Application.Factories;
 using VendorRiskScoring.Application.Interfaces;
@@ -39,7 +42,7 @@ public class RiskEngineService : IRiskEngineService
         var matrix = _matrixProvider.GetMatrix();
 
         double finalScore = 0;
-        var allExplanations = new List<string>();
+        var categorizedExplanations = new Dictionary<string, List<string>>();
 
         foreach (var rule in _rules)
         {
@@ -47,13 +50,13 @@ public class RiskEngineService : IRiskEngineService
 
             if (result.Explanations.Any())
             {
-                allExplanations.AddRange(result.Explanations);
+                categorizedExplanations[rule.Category] = result.Explanations;
             }
 
             double weight = _weights.Weights.TryGetValue(rule.Category, out var w) ? w : 0.0;
             finalScore += (result.Score * weight);
         }
 
-        return _factory.Create(vendor.Id, finalScore, allExplanations);
+        return _factory.Create(vendor.Id, finalScore, categorizedExplanations);
     }
 }

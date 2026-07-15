@@ -60,7 +60,7 @@ public class SecurityComplianceRiskRuleTests
         var result = _rule.CalculateRisk(vendor, matrix);
 
         Assert.Equal(0.8, result.Score);
-        Assert.Contains("Missing ISO27001.", result.Explanations);
+        Assert.Contains("missing ISO27001 certification", result.Explanations);
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public class SecurityComplianceRiskRuleTests
         var result = _rule.CalculateRisk(vendor, matrix);
 
         Assert.Equal(0.9, result.Score);
-        Assert.Contains("No Pentest Report.", result.Explanations);
+        Assert.Contains("No Pentest Report", result.Explanations);
     }
 
     [Fact]
@@ -104,7 +104,7 @@ public class SecurityComplianceRiskRuleTests
         var result = _rule.CalculateRisk(vendor, matrix);
 
         Assert.Equal(0.5, result.Score);
-        Assert.Contains("Expired Privacy Policy.", result.Explanations);
+        Assert.Contains("Expired Privacy Policy", result.Explanations);
     }
 
     [Fact]
@@ -126,7 +126,7 @@ public class SecurityComplianceRiskRuleTests
         var result = _rule.CalculateRisk(vendor, matrix);
 
         Assert.Equal(1.0, result.Score);
-        Assert.Contains("Expired Contract.", result.Explanations);
+        Assert.Contains("Expired Contract", result.Explanations);
     }
 
     [Fact]
@@ -153,9 +153,9 @@ public class SecurityComplianceRiskRuleTests
         var result = _rule.CalculateRisk(vendor, matrix);
 
         Assert.Equal(0.8, result.Score, 5);
-        Assert.Contains("Missing ISO27001.", result.Explanations);
-        Assert.Contains("No Pentest Report.", result.Explanations);
-        Assert.Contains("Expired Contract.", result.Explanations);
+        Assert.Contains("missing ISO27001 certification", result.Explanations);
+        Assert.Contains("No Pentest Report", result.Explanations);
+        Assert.Contains("Expired Contract", result.Explanations);
     }
 
     [Fact]

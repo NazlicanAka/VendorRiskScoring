@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using VendorRiskScoring.Application.Configuration;
 using VendorRiskScoring.Application.Factories;
 using VendorRiskScoring.Application.Interfaces;
@@ -25,8 +27,9 @@ public class RiskEngineServiceTests
         
         var mockRule = new Mock<IRiskRule>();
         mockRule.Setup(r => r.Category).Returns("Financial");
+        
         mockRule.Setup(r => r.CalculateRisk(It.IsAny<Vendor>(), It.IsAny<RiskFactorMatrix>()))
-                .Returns(new RiskResult { Score = 1.0, Explanations = new List<string> { "Test Explanation" } });
+                .Returns(new RiskResult { Score = 1.0, Explanations = new List<string> { "high debt ratio" } });
 
         var rules = new List<IRiskRule> { mockRule.Object };
 
@@ -62,11 +65,14 @@ public class RiskEngineServiceTests
         // Act
         var result = await _service.EvaluateVendorAsync(1);
 
+        // Assert
         Assert.NotNull(result);
         Assert.Equal(1, result.VendorId);
         Assert.Equal(0.5, result.RiskScore);
         Assert.Equal("Medium", result.RiskLevel); 
-        Assert.Contains("Test Explanation", result.Reason);
+
+        Assert.Contains("High debt ratio", result.Reason);
+        Assert.Contains("financial", result.Reason);
     }
 
     [Fact]

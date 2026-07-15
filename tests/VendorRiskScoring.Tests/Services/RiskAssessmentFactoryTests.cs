@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using Xunit;
 using VendorRiskScoring.Application.Configuration;
 using VendorRiskScoring.Application.Factories;
+using System.Collections.Generic;
 
 namespace VendorRiskScoring.Tests.Factories;
 
@@ -21,7 +22,6 @@ public class RiskAssessmentFactoryTests
         _factory = new RiskAssessmentFactory(options);
     }
 
-
     [Theory]
     [InlineData(0.95, "Critical")] // Kritik eşiğin üstü
     [InlineData(0.90, "Critical")] // Tam kritik eşik
@@ -34,11 +34,13 @@ public class RiskAssessmentFactoryTests
     public void Create_ReturnsCorrectRiskLevel_BasedOnScore(double score, string expectedLevel)
     {
         // Act
-        var result = _factory.Create(1, score, new List<string> { "Test reason." });
+        // Sadece risk seviyesini test ettiğimiz için boş bir dictionary gönderiyoruz
+        var result = _factory.Create(1, score, new Dictionary<string, List<string>>());
 
         // Assert
         Assert.Equal(expectedLevel, result.RiskLevel);
     }
+
     [Fact]
     public void Create_RoundsFinalScore_ToTwoDecimalPlaces()
     {
@@ -46,29 +48,44 @@ public class RiskAssessmentFactoryTests
         double rawScore = 0.75689;
 
         // Act
-        var result = _factory.Create(1, rawScore, new List<string> { "Test" });
+        var result = _factory.Create(1, rawScore, new Dictionary<string, List<string>>());
 
         // Assert
         Assert.Equal(0.76, result.RiskScore); 
     }
 
-
     [Fact]
-    public void Create_MapsVendorIdAndJoinsExplanationsCorrectly()
+    public void Create_MapsVendorIdAndGeneratesMeaningfulReasonCorrectly()
     {
         // Arrange
         int vendorId = 42;
-        var explanations = new List<string> 
-        { 
-            "Financial health is poor.", 
-            "SLA uptime is acceptable." 
+        var categorizedExplanations = new Dictionary<string, List<string>>
+        {
+            { "Operational", new List<string> { "an SLA below 95%" } },
+            { "SecurityCompliance", new List<string> { "missing ISO27001 certification" } }
         };
 
         // Act
-        var result = _factory.Create(vendorId, 0.50, explanations);
+        var result = _factory.Create(vendorId, 0.75, categorizedExplanations);
 
         // Assert
         Assert.Equal(vendorId, result.VendorId);
-        Assert.Equal("Financial health is poor. SLA uptime is acceptable.", result.Reason);
+        
+        // Cümlenin tam olarak yeni mantığa göre üretildiğini doğruluyoruz
+        string expectedReason = "An SLA below 95% and missing ISO27001 certification significantly impact the operational and security compliance risk levels, resulting in a High overall risk score.";
+        Assert.Equal(expectedReason, result.Reason);
+    }
+
+    [Fact]
+    public void Create_WhenNoExplanations_ReturnsOptimalPerformanceReason()
+    {
+        // Arrange
+        var emptyExplanations = new Dictionary<string, List<string>>();
+
+        // Act
+        var result = _factory.Create(1, 0.10, emptyExplanations);
+
+        // Assert
+        Assert.Equal("The vendor has a Low risk profile with optimal performance across all evaluated metrics.", result.Reason);
     }
 }
