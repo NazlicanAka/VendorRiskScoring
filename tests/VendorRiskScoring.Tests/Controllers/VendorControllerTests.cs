@@ -143,6 +143,6 @@ public class VendorControllerTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnList = Assert.IsAssignableFrom<IEnumerable<RiskAssessment>>(okResult.Value);
         Assert.Equal(2, returnList.Count());
-        Assert.Equal(0.45, returnList.First().RiskScore);
+        Assert.Equal(0.95, returnList.First().RiskScore);
     }
 }

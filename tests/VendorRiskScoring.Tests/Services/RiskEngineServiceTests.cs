@@ -11,6 +11,10 @@ using VendorRiskScoring.Domain.Entities;
 using VendorRiskScoring.Domain.Models;
 using VendorRiskScoring.Application.Rules;
 using VendorRiskScoring.Application.Models;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text;
+using System.Text.Json;
+using System.Threading;
 
 namespace VendorRiskScoring.Tests.Services;
 
@@ -18,12 +22,17 @@ public class RiskEngineServiceTests
 {
     private readonly Mock<IVendorRepository> _mockRepo;
     private readonly Mock<IRiskMatrixProvider> _mockMatrixProvider;
+    private readonly Mock<IDistributedCache> _mockCache;
     private readonly RiskEngineService _service;
 
     public RiskEngineServiceTests()
     {
         _mockRepo = new Mock<IVendorRepository>();
         _mockMatrixProvider = new Mock<IRiskMatrixProvider>();
+        _mockCache = new Mock<IDistributedCache>();
+
+        _mockCache.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                  .ReturnsAsync((byte[]?)null);
         
         var mockRule = new Mock<IRiskRule>();
         mockRule.Setup(r => r.Category).Returns("Financial");
@@ -50,7 +59,8 @@ public class RiskEngineServiceTests
             _mockRepo.Object, 
             _mockMatrixProvider.Object, 
             weightsOptions, 
-            factory);
+            factory,
+            _mockCache.Object);
     }
 
     [Fact]

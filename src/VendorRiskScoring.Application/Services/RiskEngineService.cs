@@ -19,7 +19,7 @@ public class RiskEngineService : IRiskEngineService
     private readonly IRiskMatrixProvider _matrixProvider;
     private readonly RiskWeightsOptions _weights;
     private readonly IRiskAssessmentFactory _factory;
-    private readonly IDistributedCache _cache; // Redis için eklendi
+    private readonly IDistributedCache _cache; 
 
     public RiskEngineService(
         IEnumerable<IRiskRule> rules,
@@ -27,7 +27,7 @@ public class RiskEngineService : IRiskEngineService
         IRiskMatrixProvider matrixProvider,
         IOptions<RiskWeightsOptions> weights,
         IRiskAssessmentFactory factory,
-        IDistributedCache cache) // Constructor'a eklendi
+        IDistributedCache cache) 
     {
         _rules = rules;
         _vendorRepository = vendorRepository;
