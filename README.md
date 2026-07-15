@@ -38,6 +38,12 @@ Docker Desktop installed and running.
 ### Access the Swagger UI to interact with the API:
 URL: http://localhost:5188/swagger
 
+### API EndPoints:
+* GET /api/vendor
+* POST /api/vendor
+* GET /api/vendor/{id}/risk
+* GET /api/vendor/leaderboard
+
 ### Monitoring & Centralized Logging (ELK)
 The API is integrated with Serilog writing structured JSON logs to src/VendorRiskScoring.API/logs/. Logstash automatically ingests these logs into Elasticsearch.
 
