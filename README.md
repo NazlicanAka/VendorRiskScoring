@@ -1,7 +1,7 @@
 # Vendor Risk Scoring API
 
 A robust, enterprise-grade RESTful API built with **.NET 8** designed to automate third-party risk management. The system evaluates and scores vendors across financial health, operational stability, and security compliance facilitating risk matrix.
-You can find detailed documentation (RiskManagement.pdf), core logics, and API endpoints, examples.
+* You can find detailed documentation [RiskManagement.pdf](RiskManagement.pdf), core logics, and API endpoints, examples.
 
 
 <p align="center">
@@ -14,6 +14,7 @@ You can find detailed documentation (RiskManagement.pdf), core logics, and API e
 
 * **Backend Framework:** .NET 8 (ASP.NET Core Web API)
 * **Database & ORM:** PostgreSQL & Entity Framework Core (Code-First Migration & Seeder)
+* **Caching:** Redis (Distributed Caching)
 * **Logging:** Serilog (JSON Sink) paired with the ELK Stack (Elasticsearch, Logstash, Kibana).
 * **Testing:** xUnit, Moq (Unit Testing)
 * **Containerization:** Docker & Docker Compose (Multi-container orchestration)
