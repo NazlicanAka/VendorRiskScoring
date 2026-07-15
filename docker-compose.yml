@@ -16,7 +16,6 @@ services:
     networks:
       - risk-network
       
-  # YENİ EKLENEN REDIS SERVİSİ (Hizası vendor-db ve api ile aynı olmalı)
   redis:
     image: redis:7-alpine
     container_name: vendor_risk_redis
@@ -31,15 +30,12 @@ services:
       dockerfile: src/VendorRiskScoring.API/Dockerfile
     container_name: vendor_risk_api
     ports:
-      # Bilgisayarının 5188 portunu, container'ın 8080 portuna bağlıyoruz (Swagger'a 5188'den girebilmen için)
       - "5188:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      # appsettings.json'daki bağlantı adresini eziyoruz: Host=localhost yerine Host=vendor-db yazıyoruz
       - ConnectionStrings__DefaultConnection=Host=vendor-db;Port=5432;Database=VendorRiskDB;Username=postgres;Password=supersecretpassword
       - ConnectionStrings__RedisConnection=vendor_risk_redis:6379
     volumes:
-      # API'nin log yazdığı klasörü host makineye bağlıyoruz, Logstash de buradan okumaya devam edecek
       - ./src/VendorRiskScoring.API/logs:/app/logs
     depends_on:
       - vendor-db
@@ -48,7 +44,6 @@ services:
     networks:
       - risk-network
 
-  # 2. Elasticsearch (Arama ve Depolama Motoru)
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
     container_name: vendor_risk_elasticsearch
@@ -63,14 +58,11 @@ services:
     networks:
       - risk-network
 
-  # 3. Logstash (Log İşleme Hattı)
   logstash:
     image: docker.elastic.co/logstash/logstash:8.10.2
     container_name: vendor_risk_logstash
     volumes:
-      # Yazdığımız konfigürasyon dosyasını bağlıyoruz
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
-      # API projemizin ürettiği günlük log klasörünü Logstash container'ına bağlıyoruz
       - ./src/VendorRiskScoring.API/logs:/usr/share/logstash/logs:ro
     environment:
       - "LS_JAVA_OPTS=-Xms256m -Xmx256m"
@@ -79,7 +71,6 @@ services:
     networks:
       - risk-network
 
-  # 4. Kibana (Görselleştirme Arayüzü)
   kibana:
     image: docker.elastic.co/kibana/kibana:8.10.2
     container_name: vendor_risk_kibana

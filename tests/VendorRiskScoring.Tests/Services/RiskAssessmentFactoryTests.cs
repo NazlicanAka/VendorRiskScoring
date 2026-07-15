@@ -23,18 +23,17 @@ public class RiskAssessmentFactoryTests
     }
 
     [Theory]
-    [InlineData(0.95, "Critical")] // Kritik eşiğin üstü
-    [InlineData(0.90, "Critical")] // Tam kritik eşik
-    [InlineData(0.85, "High")]     // High ile Critical arası
-    [InlineData(0.70, "High")]     // Tam High eşiği
-    [InlineData(0.50, "Medium")]   // Medium ile High arası
-    [InlineData(0.40, "Medium")]   // Tam Medium eşiği
-    [InlineData(0.20, "Low")]      // Medium eşiğinin altı
-    [InlineData(0.00, "Low")]      // Sıfır skoru
+    [InlineData(0.95, "Critical")] 
+    [InlineData(0.90, "Critical")] 
+    [InlineData(0.85, "High")]     
+    [InlineData(0.70, "High")]     
+    [InlineData(0.50, "Medium")]   
+    [InlineData(0.40, "Medium")]   
+    [InlineData(0.20, "Low")]      
+    [InlineData(0.00, "Low")]      
     public void Create_ReturnsCorrectRiskLevel_BasedOnScore(double score, string expectedLevel)
     {
         // Act
-        // Sadece risk seviyesini test ettiğimiz için boş bir dictionary gönderiyoruz
         var result = _factory.Create(1, score, new Dictionary<string, List<string>>());
 
         // Assert
@@ -71,7 +70,6 @@ public class RiskAssessmentFactoryTests
         // Assert
         Assert.Equal(vendorId, result.VendorId);
         
-        // Cümlenin tam olarak yeni mantığa göre üretildiğini doğruluyoruz
         string expectedReason = "An SLA below 95% and missing ISO27001 certification significantly impact the operational and security compliance risk levels, resulting in a High overall risk score.";
         Assert.Equal(expectedReason, result.Reason);
     }
