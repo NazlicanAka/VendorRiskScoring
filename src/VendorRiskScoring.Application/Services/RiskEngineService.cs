@@ -76,7 +76,7 @@ public class RiskEngineService : IRiskEngineService
 
         var leaderboard = vendors
             .Select(vendor => EvaluateVendorInternal(vendor, matrix))
-            .OrderByDescending(assessment => assessment.RiskScore)
+            .OrderBy(assessment => assessment.RiskScore)
             .ToList();
 
         return leaderboard;
