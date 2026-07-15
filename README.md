@@ -4,21 +4,10 @@ A robust, enterprise-grade RESTful API built with **.NET 8** designed to automat
 
 ---
 
-## 📚 Table of Contents
-1. [Tech Stack & Architecture](#-tech-stack--architecture)
-2. [Datasets & Seed Data Structure](#-datasets--seed-data-structure)
-3. [Setup & Installation Guide](#-setup--installation-guide)
-4. [API Endpoints & Examples](#-api-endpoints--examples)
-5. [Monitoring & Centralized Logging (ELK)](#-monitoring--centralized-logging-elk)
-6. [Testing](#-testing)
-
----
-
 ## 🛠️ 1. Tech Stack & Architecture
 
 * **Backend Framework:** .NET 8 (ASP.NET Core Web API)
 * **Database & ORM:** PostgreSQL & Entity Framework Core (Code-First Migration & Seeder)
-* **Design Patterns:** Strategy Pattern (for modular risk rules), Options Pattern (for configuration), Dependency Injection.
 * **Logging:** Serilog (JSON Sink) paired with the ELK Stack (Elasticsearch, Logstash, Kibana).
 * **Testing:** xUnit, Moq (Unit Testing)
 * **Containerization:** Docker & Docker Compose (Multi-container orchestration)
