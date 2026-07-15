@@ -35,7 +35,7 @@ try
 
     // Infrastructure
     builder.Services.AddSingleton<IRiskMatrixProvider, JsonRiskMatrixProvider>();
-    
+
     // EfVendorRepository 
     builder.Services.AddScoped<IVendorRepository, EfVendorRepository>();
 
@@ -48,10 +48,27 @@ try
     builder.Services.AddScoped<IRiskRule, OperationalRiskRule>();
     builder.Services.AddScoped<IRiskRule, SecurityComplianceRiskRule>();
 
+    // Redis Distributed Cache Konfigürasyonu
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        options.Configuration = builder.Configuration.GetConnectionString("RedisConnection");
+        options.InstanceName = "VendorRisk_"; 
+    });
+
     // API Services
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+
+    builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
     var app = builder.Build();
 
@@ -63,12 +80,12 @@ try
         {
             var context = services.GetRequiredService<VendorDbContext>();
 
-            context.Database.EnsureCreated(); 
+            context.Database.EnsureCreated();
 
             // get the file paths from configuration (app.settings.json)
             var filePaths = services.GetRequiredService<IOptions<FilePathsOptions>>().Value;
             var vendorDataPath = Path.Combine(AppContext.BaseDirectory, filePaths.VendorData);
-            
+
             DatabaseSeeder.SeedVendors(context, vendorDataPath);
         }
         catch (Exception ex)
@@ -85,6 +102,7 @@ try
 
     app.UseSerilogRequestLogging();
 
+    app.UseCors("AllowFrontend");
     app.UseAuthorization();
     app.MapControllers();
 

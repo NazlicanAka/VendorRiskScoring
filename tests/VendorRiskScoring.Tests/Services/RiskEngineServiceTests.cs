@@ -84,4 +84,25 @@ public class RiskEngineServiceTests
         // Act & Assert
         await Assert.ThrowsAsync<KeyNotFoundException>(() => _service.EvaluateVendorAsync(99));
     }
+
+    [Fact]
+    public async Task GetLeaderboardAsync_WhenVendorsExist_ReturnsSortedLeaderboard()
+    {
+        // Arrange
+        var mockVendors = new List<Vendor>
+        {
+            new Vendor { Id = 101, Name = "High Risk Vendor" },
+            new Vendor { Id = 102, Name = "Low Risk Vendor" }
+        };
+        
+        _mockRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(mockVendors);
+        _mockMatrixProvider.Setup(m => m.GetMatrix()).Returns(new RiskFactorMatrix());
+
+        // Act
+        var result = await _service.GetLeaderboardAsync();
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(2, result.Count());
+    }
 }

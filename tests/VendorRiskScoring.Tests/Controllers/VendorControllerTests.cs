@@ -123,4 +123,26 @@ public class VendorControllerTests
         var objectResult = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, objectResult.StatusCode);
     }
+
+    [Fact]
+    public async Task GetLeaderboard_ReturnsOkResult_WithSortedRiskAssessments()
+    {
+        // Arrange
+        var mockLeaderboard = new List<RiskAssessment>
+        {
+            new RiskAssessment { VendorId = 2, RiskScore = 0.95, RiskLevel = "Critical", Reason = "Critical issues" },
+            new RiskAssessment { VendorId = 1, RiskScore = 0.45, RiskLevel = "Medium", Reason = "Medium issues" }
+        };
+
+        _mockRiskEngineService.Setup(service => service.GetLeaderboardAsync()).ReturnsAsync(mockLeaderboard);
+
+        // Act
+        var result = await _controller.GetLeaderboard();
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var returnList = Assert.IsAssignableFrom<IEnumerable<RiskAssessment>>(okResult.Value);
+        Assert.Equal(2, returnList.Count());
+        Assert.Equal(0.45, returnList.First().RiskScore);
+    }
 }

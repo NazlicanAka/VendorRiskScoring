@@ -76,4 +76,25 @@ public class VendorController : ControllerBase
             return StatusCode(500, new { message = "An internal server error occurred." });
         }
     }
+
+    // GET /api/vendor/leaderboard
+    [HttpGet("leaderboard")]
+    public async Task<IActionResult> GetLeaderboard()
+    {
+        try
+        {
+            _logger.LogInformation("Generating vendor risk leaderboard.");
+            
+            var leaderboard = await _riskEngineService.GetLeaderboardAsync();
+            
+            _logger.LogInformation("Leaderboard generated successfully with {Count} vendors.", leaderboard.Count());
+            
+            return Ok(leaderboard);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while generating the vendor leaderboard.");
+            return StatusCode(500, new { message = "An internal server error occurred." });
+        }
+    }
 }

@@ -15,6 +15,16 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - risk-network
+      
+  # YENİ EKLENEN REDIS SERVİSİ (Hizası vendor-db ve api ile aynı olmalı)
+  redis:
+    image: redis:7-alpine
+    container_name: vendor_risk_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - risk-network
+
   api:
     build:
       context: .
@@ -27,12 +37,14 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       # appsettings.json'daki bağlantı adresini eziyoruz: Host=localhost yerine Host=vendor-db yazıyoruz
       - ConnectionStrings__DefaultConnection=Host=vendor-db;Port=5432;Database=VendorRiskDB;Username=postgres;Password=supersecretpassword
+      - ConnectionStrings__RedisConnection=vendor_risk_redis:6379
     volumes:
       # API'nin log yazdığı klasörü host makineye bağlıyoruz, Logstash de buradan okumaya devam edecek
       - ./src/VendorRiskScoring.API/logs:/app/logs
     depends_on:
       - vendor-db
       - logstash
+      - redis
     networks:
       - risk-network
 
