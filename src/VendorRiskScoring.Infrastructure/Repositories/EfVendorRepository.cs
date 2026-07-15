@@ -23,4 +23,9 @@ public class EfVendorRepository : IVendorRepository
     {
         return await _context.Vendors.ToListAsync();
     }
+    public async Task AddAsync(Vendor vendor)
+    {
+        await _context.Vendors.AddAsync(vendor);
+        await _context.SaveChangesAsync();
+    }
 }

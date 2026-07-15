@@ -18,10 +18,8 @@ public class VendorDbContext : DbContext
         modelBuilder.Entity<Vendor>(entity =>
         {
             entity.HasKey(e => e.Id);
-            
-            // PostgreSQL, List<string> tipini otomatik olarak text[] (array) tipine çevirir.
-            
-            // Documents alt nesnesini ayrı bir tablo yapmak yerine aynı tabloya kolon olarak gömüyoruz (Owned Entity Pattern)
+
+            // Documents inserted as a single column, not a table (Owned Entity Pattern)
             entity.OwnsOne(e => e.Documents, doc =>
             {
                 doc.Property(d => d.ContractValid).HasColumnName("Document_ContractValid");

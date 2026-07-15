@@ -22,7 +22,7 @@ public class JsonRiskMatrixProvider : IRiskMatrixProvider
         }
         else
         {
-            _matrix = new RiskFactorMatrix(); // Dosya yoksa sistem çökmesin, boş matris dönsün
+            _matrix = new RiskFactorMatrix();
         }
     }
 

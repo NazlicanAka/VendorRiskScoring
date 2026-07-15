@@ -10,7 +10,6 @@ using VendorRiskScoring.Infrastructure.Data;
 using VendorRiskScoring.Infrastructure.Providers;
 using VendorRiskScoring.Infrastructure.Repositories;
 
-// 1. Serilog Başlangıç Ayarları
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateBootstrapLogger();
@@ -19,55 +18,54 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    // Serilog'u appsettings.json'dan okuyacak şekilde sisteme entegre et
+    // Serilog'u appsettings
     builder.Host.UseSerilog((context, services, configuration) => configuration
         .ReadFrom.Configuration(context.Configuration));
 
-    // 2. DbContext Kaydı (PostgreSQL Bağlantısı)
+    // DbContext 
     builder.Services.AddDbContext<VendorDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-    // 3. Konfigürasyon Bağlamaları (Options Pattern)
+    // Configuration Options
     builder.Services.Configure<RiskWeightsOptions>(builder.Configuration.GetSection(RiskWeightsOptions.SectionName));
     builder.Services.Configure<RiskThresholdOptions>(builder.Configuration.GetSection(RiskThresholdOptions.SectionName));
     builder.Services.Configure<FilePathsOptions>(builder.Configuration.GetSection(FilePathsOptions.SectionName));
 
-    // 4. Dependency Injection (DI) Kayıtları
+    // Dependency Injection
 
-    // Infrastructure (Altyapı)
+    // Infrastructure
     builder.Services.AddSingleton<IRiskMatrixProvider, JsonRiskMatrixProvider>();
     
-    // YENİ: EfVendorRepository eklendi ve DbContext'e uyumlu olması için Scoped yapıldı.
+    // EfVendorRepository 
     builder.Services.AddScoped<IVendorRepository, EfVendorRepository>();
 
     // Application (Servisler ve Factory)
     builder.Services.AddSingleton<IRiskAssessmentFactory, RiskAssessmentFactory>();
     builder.Services.AddScoped<IRiskEngineService, RiskEngineService>();
 
-    // Strategy Pattern (Kurallar)
+    // Strategy Pattern - rules
     builder.Services.AddScoped<IRiskRule, FinancialRiskRule>();
     builder.Services.AddScoped<IRiskRule, OperationalRiskRule>();
     builder.Services.AddScoped<IRiskRule, SecurityComplianceRiskRule>();
 
-    // Standart API Servisleri
+    // API Services
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
     var app = builder.Build();
 
-    // 5. Veritabanını Otomatik Oluşturma ve Seed (Veri Doldurma) İşlemi
+    // Seed operation
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;
         try
         {
             var context = services.GetRequiredService<VendorDbContext>();
-            
-            // Eğer veritabanı yoksa Docker üzerinde oluşturur ve tabloları kurar
+
             context.Database.EnsureCreated(); 
-            
-            // appsettings.json içerisindeki dosya yolunu alıp Seed işlemini başlatır
+
+            // get the file paths from configuration (app.settings.json)
             var filePaths = services.GetRequiredService<IOptions<FilePathsOptions>>().Value;
             var vendorDataPath = Path.Combine(AppContext.BaseDirectory, filePaths.VendorData);
             
@@ -79,14 +77,12 @@ try
         }
     }
 
-    // 6. Middleware Pipeline
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
         app.UseSwaggerUI();
     }
 
-    // Gelen istekleri Serilog ile loglamak için
     app.UseSerilogRequestLogging();
 
     app.UseAuthorization();

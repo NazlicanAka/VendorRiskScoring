@@ -13,7 +13,7 @@ public class OperationalRiskRule : IRiskRule
         var result = new RiskResult();
         var triggeredScores = new List<double>();
 
-        // 1. SLA Uptime Kontrolü
+        // 1. SLA Uptime
         if (vendor.SlaUptime < 95)
         {
             if (matrix.OperationalRisk.TryGetValue("slaDrop", out var slaRisks) && slaRisks.Any())
@@ -28,7 +28,7 @@ public class OperationalRiskRule : IRiskRule
             result.Explanations.Add($"SLA >= 95%.");
         }
 
-        // 2. Major Incidents Kontrolü
+        // 2. Major Incidents
         if (vendor.MajorIncidents > 2)
         {
             if (matrix.OperationalRisk.TryGetValue("majorIncident", out var incidentRisks) && incidentRisks.Any())
@@ -43,7 +43,6 @@ public class OperationalRiskRule : IRiskRule
             result.Explanations.Add($"Major incidents <= 2.");
         }
 
-        // Eğer riskler tetiklendiyse ortalamalarını alıyoruz, yoksa 0 dönüyoruz
         if (triggeredScores.Any())
         {
             result.Score = triggeredScores.Average();

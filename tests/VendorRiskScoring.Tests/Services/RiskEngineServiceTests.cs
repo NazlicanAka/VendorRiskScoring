@@ -53,7 +53,6 @@ public class RiskEngineServiceTests
     [Fact]
     public async Task EvaluateVendorAsync_WhenVendorExists_ReturnsCorrectAssessment()
     {
-        // Arrange: Repository'ye "1 numaralı id gelirse bu sahte vendor'ı dön" diyoruz (Moq Sihri)
         _mockRepo.Setup(repo => repo.GetByIdAsync(1))
                  .ReturnsAsync(new Vendor { Id = 1, Name = "Test Vendor" });
                  
@@ -63,7 +62,6 @@ public class RiskEngineServiceTests
         // Act
         var result = await _service.EvaluateVendorAsync(1);
 
-        // Assert: Beklenen skor = Rule Score (1.0) * Weight (0.5) = 0.5
         Assert.NotNull(result);
         Assert.Equal(1, result.VendorId);
         Assert.Equal(0.5, result.RiskScore);
@@ -74,7 +72,6 @@ public class RiskEngineServiceTests
     [Fact]
     public async Task EvaluateVendorAsync_WhenVendorDoesNotExist_ThrowsKeyNotFoundException()
     {
-        // Arrange: Repository null dönecek şekilde ayarlandı
         _mockRepo.Setup(repo => repo.GetByIdAsync(99))
                  .ReturnsAsync((Vendor?)null);
 

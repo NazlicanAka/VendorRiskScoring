@@ -12,6 +12,7 @@ public class VendorController : ControllerBase
     private readonly IVendorRepository _vendorRepository;
     private readonly ILogger<VendorController> _logger;
 
+    // Repository Pattern is used here to abstract the data access layer. This allows us to switch out the underlying data source (e.g., from PostgreSQL to another database) without changing the controller logic.
     public VendorController(
         IRiskEngineService riskEngineService, 
         IVendorRepository vendorRepository,
@@ -30,16 +31,22 @@ public class VendorController : ControllerBase
         return Ok(vendors);
     }
 
-    // POST /api/vendor (Vaka çalışmasında istenen örnek endpoint)
+    // POST: api/vendor
     [HttpPost]
-    public IActionResult CreateVendor([FromBody] Vendor vendor)
+    public async Task<IActionResult> CreateVendor([FromBody] Vendor vendor)
     {
-        // Şimdilik sadece gelen veriyi logluyor ve başarılı dönüyoruz (Veritabanı bağlandığında kayıt işlemi eklenebilir)
-        _logger.LogInformation("New vendor created: {VendorName}", vendor.Name);
+        if (vendor == null)
+        {
+            return BadRequest("Vendor data is null.");
+        }
+        await _vendorRepository.AddAsync(vendor);
+
+        _logger.LogInformation("New vendor created successfully with ID {VendorId}: {VendorName}", vendor.Id, vendor.Name);
+
         return CreatedAtAction(nameof(GetAllVendors), new { id = vendor.Id }, vendor);
     }
 
-    // GET /api/vendor/{id}/risk (Risk skorunu hesaplayan ana endpoint)
+    // GET /api/vendor/{id}/risk
     [HttpGet("{id}/risk")]
     public async Task<IActionResult> GetVendorRisk(int id)
     {

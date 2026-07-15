@@ -36,7 +36,6 @@ public class RiskEngineService : IRiskEngineService
             throw new KeyNotFoundException($"Vendor with ID {vendorId} not found.");
         }
 
-        // Matrisi Provider'dan çekiyoruz ve 'matrix' adlı yerel değişkene atıyoruz
         var matrix = _matrixProvider.GetMatrix();
 
         double finalScore = 0;
@@ -44,9 +43,8 @@ public class RiskEngineService : IRiskEngineService
 
         foreach (var rule in _rules)
         {
-            // BURASI DÜZELDİ: _matrix yerine matrix kullanıyoruz
-            var result = rule.CalculateRisk(vendor, matrix); 
-            
+            var result = rule.CalculateRisk(vendor, matrix);
+
             if (result.Explanations.Any())
             {
                 allExplanations.AddRange(result.Explanations);

@@ -6,4 +6,5 @@ public interface IVendorRepository
 {
     Task<Vendor?> GetByIdAsync(int id);
     Task<IEnumerable<Vendor>> GetAllAsync();
+    Task AddAsync(Vendor vendor);
 }
