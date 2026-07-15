@@ -4,7 +4,9 @@ A robust, enterprise-grade RESTful API built with **.NET 8** designed to automat
 
 ## 📐 Architecture & System Flow
 
-![Vendor Risk Scoring Architecture](Risk.drawio.svg.svg)
+<p align="center">
+  <img src="Risk.drawio.svg.svg" alt="Architecture Diagram" width="800"/>
+</p>
 
 ---
 
