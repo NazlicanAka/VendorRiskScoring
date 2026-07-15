@@ -1,6 +1,10 @@
 # Vendor Risk Scoring API
 
-A robust, enterprise-grade RESTful API built with **.NET 8** designed to automate third-party risk management. The system evaluates and scores vendors across financial health, operational stability, and security compliance using an extensible **Rule Engine (Strategy Pattern)**.
+A robust, enterprise-grade RESTful API built with **.NET 8** designed to automate third-party risk management. The system evaluates and scores vendors across financial health, operational stability, and security compliance.
+
+## 📐 Architecture & System Flow
+
+![Vendor Risk Scoring Architecture](Risk.drawio.svg.svg)
 
 ---
 
