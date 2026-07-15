@@ -2,10 +2,9 @@
 
 A robust, enterprise-grade RESTful API built with **.NET 8** designed to automate third-party risk management. The system evaluates and scores vendors across financial health, operational stability, and security compliance.
 
-## 📐 Architecture & System Flow
 
 <p align="center">
-  <img src="Risk.drawio.svg.svg" alt="Architecture Diagram" width="800"/>
+  <img src="Risk.drawio.svg" alt="Architecture Diagram" width="800"/>
 </p>
 
 ---
