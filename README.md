@@ -25,49 +25,20 @@ A robust, enterprise-grade RESTful API built with **.NET 8** designed to automat
 
 ---
 
-## 🗄️ 2. Datasets (Seed Data)
-
-The application relies on a predefined, realistic dataset representing third-party vendors with various risk profiles. 
-
-* **File Location:** `src/VendorRiskScoring.API/Data/SeedData/SampleVendorData.json`
-* **Data Schema Description:**
-  * `Id` & `Name`: Unique identifier and company name.
-  * `FinancialHealth`: Numeric score (0–100) evaluated against threshold matrices.
-  * `SlaUptime`: Operational metric percentage (e.g., 94.5%).
-  * `MajorIncidents`: Count of severe operational disruptions.
-  * `SecurityCerts`: List of compliance certifications held (e.g., *SOC2*, *ISO27001*).
-  * `Documents`: Nested value objects tracking contract validity, privacy policies, and penetration test reports.
-
-**Sample JSON Snippet:**
-```json
-{
-  "id": 1,
-  "name": "TechPlus Solutions",
-  "financialHealth": 75,
-  "slaUptime": 94.5,
-  "majorIncidents": 1,
-  "securityCerts": ["SOC2"],
-  "documents": {
-    "contractValid": true,
-    "privacyPolicyValid": false,
-    "pentestReportValid": true
-  }
-}
-
 🚀 3. Setup & Installation Guide
-This project is fully containerized. You do not need to install .NET SDK, PostgreSQL, or Elasticsearch on your local machine to run it.
+This project is fully containerized. 
 
-Prerequisites
+Prerequisites:
 Docker Desktop installed and running.
 
-Step-by-Step Execution
-Clone the repository and navigate to the root directory (where docker-compose.yml is located).
+Step-by-Step Execution:
+1- Clone the repository and navigate to the root directory (where docker-compose.yml is located).
 
 Run the following command to build the images and start all services in detached mode:
-docker-compose up -d --build
+2- docker-compose up -d --build
 
 Verify that all containers (vendor_risk_api, vendor_risk_postgres, vendor_risk_elasticsearch, vendor_risk_logstash, vendor_risk_kibana) are running:
-docker ps
+3- docker ps
 
 Access the Swagger UI to interact with the API:
 URL: http://localhost:5188/swagger
@@ -79,13 +50,13 @@ Endpoint: GET /api/vendor/{id}/risk
 Description: Fetches the vendor, runs the rule engine, applies weighted calculations, and returns an aggregate risk score with a human-readable explanation.
 
 Example Request:
-GET /api/vendor/1/risk
+GET /api/vendor/10/risk
 
 Example Response (200 OK):
 {
-  "riskScore": 0.51,
-  "riskLevel": "Medium",
-  "reason": "Financial Health between 50 and 80. SLA < 95%. Major incidents <= 2. Expired Privacy Policy."
+  "riskScore": 0.06,
+  "riskLevel": "Low",
+  "reason": "Financial Health between 50 and 80. and All security and compliance checks passed. significantly impact the financial and security compliance risk levels, resulting in a Low overall risk score."
 }
 
 Get All Vendors
@@ -93,7 +64,7 @@ Endpoint: GET /api/vendor
 
 Description: Retrieves the list of all registered vendors from PostgreSQL.
 
-📊 5. Monitoring & Centralized Logging (ELK)
+5. Monitoring & Centralized Logging (ELK)
 The API is integrated with Serilog writing structured JSON logs to src/VendorRiskScoring.API/logs/. Logstash automatically ingests these logs into Elasticsearch.
 
 To view real-time logs and system health:
